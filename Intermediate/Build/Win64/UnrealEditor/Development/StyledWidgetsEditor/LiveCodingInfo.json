@@ -1,0 +1,18 @@
+{
+	"RemapUnityFiles": 
+	{
+		"Module.StyledWidgetsEditor.cpp.obj": [
+			"StyledWidgetsEditor.init.gen.cpp.obj",
+			"WidgetStyleSheetFactory.gen.cpp.obj",
+			"AssetTypeActions_WidgetStyleSheet.cpp.obj",
+			"StyledWidgetsEditorModule.cpp.obj",
+			"SWidgetStyleSheetColorListItem.cpp.obj",
+			"SWidgetStyleSheetStyleListItem.cpp.obj",
+			"SWidgetStyleSheetStyleView.cpp.obj",
+			"WidgetStyleSheetColorCustomization.cpp.obj",
+			"WidgetStyleSheetEditor.cpp.obj",
+			"WidgetStyleSheetEditorModels.cpp.obj",
+			"WidgetStyleSheetFactory.cpp.obj"
+		]
+	}
+}

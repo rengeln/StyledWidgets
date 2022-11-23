@@ -1,0 +1,12 @@
+/NOLOGO
+/errorReport:prompt
+/MACHINE:x64
+/SUBSYSTEM:WINDOWS
+/DEF
+/NAME:"UnrealEditor-StyledWidgetsEditor.dll"
+/IGNORE:4221
+/NODEFAULTLIB
+"C:\Dev\StyledWidgetsDemo\Intermediate\Build\Win64\StyledWidgetsDemoEditor\Development\UnrealEd\SharedPCH.UnrealEd.ShadowErrors.h.obj"
+"C:\Dev\StyledWidgetsDemo\Plugins\StyledWidgets\Intermediate\Build\Win64\UnrealEditor\Development\StyledWidgetsEditor\Module.StyledWidgetsEditor.cpp.obj"
+"C:\Dev\StyledWidgetsDemo\Plugins\StyledWidgets\Intermediate\Build\Win64\UnrealEditor\Development\StyledWidgetsEditor\Default.rc2.res"
+/OUT:"C:\Dev\StyledWidgetsDemo\Plugins\StyledWidgets\Intermediate\Build\Win64\UnrealEditor\Development\StyledWidgetsEditor\UnrealEditor-StyledWidgetsEditor.lib"
