@@ -1,4 +1,4 @@
-# StyledWidgets
+# Styled Widgets Plugin
 
 This plugin for Unreal Engine 5 allows you to create CSS-inspired style sheets to define the appearance of your in-game UI.
 It is designed to improve your iteration speed and allow you to deploy and update UI themes across your entire game in
@@ -181,8 +181,8 @@ to have a number of advantages:
   events for these interactions. I have also added support for keyboard and controller input as an alternative
   mechanism for clicking. In order to avoid adding any runtime overhead, these interactions are all opt-in.
 * Removal of hard-coded styling choices. In particular, many UMG widgets are automatically rendered as
-  semi-transparent when disabled. Only a handful override this behavior. My intent has been to expose 100%
-  of all appearance decisions to the UI designer.
+  semi-transparent when disabled. Only a handful override this behavior. In contrast, styled widgets expose
+  100% of a widget's appearane to the designer.
   
 ## Known Issues
 
@@ -192,3 +192,8 @@ includes:
 * More widget types, with the goal of eventually providing a styled version of every UMG widget type.
 * Integration with UE5's Common UI and View Model plugins.
 * Better documentation and more in-depth tutorials.
+* Mechanism for splitting a style sheet into multiple files to make it easier for designers to collaborate.
+* Tool for diagnosing how a style is applied to a widget so that a designer can easily debug when a
+  widget doesn't look like expected.
+  
+
