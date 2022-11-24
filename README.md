@@ -9,9 +9,8 @@ on the same principle as CSS.
 
 There are three components to this plugin:
 
-* A collection of Styled Widgets which you use in place of regular widgets. For example, there is a Text (Styled) widget
-  which fulfills the same role as a Text widget, while supporting the styling engine. Additionally, there is a StyledUserWidget
-  that allows you to leverage the styling engine for your own UMG widgets.
+* A collection of Styled Widgets which you use in place of default UMG widgets. For example, there is a Text (Styled) widget
+  which fulfills the same role as a Text widget, while supporting the styling engine.
 
 * The style sheet editor, which allows you to create styles and define how they are applied using CSS-like selectors.
 
@@ -115,6 +114,19 @@ Next, create a widget and inherit from StyledUserWidget rather than UserWidget. 
 to the blueprint style class you made. Finally, override the Apply Style function. Cast the input to the
 style class you made, and then you can read its values and use them to style your widget.
 
+### Inline Styles
+
+If you have a styled widget but you want to define its style directly instead of applying it from a style
+sheet, you can click `Use Inline Style` in the `Style` category. When this is set, the style sheet will
+not be applied to the widget, and you can edit its appearace properties directly.
+
+### Override Style Sheet
+
+Normally, you have a single active style sheet at a time which styles your entire game. This is the recommended
+workflow, but if you want to use a different style sheet for part of the UI, you can do so. Each styled widget
+has a `Override Style Sheet` property, which you can set to a custom style sheet. This will be used not only
+for the widget, but for all of its children.
+
 ### Identifiers
 
 All styled widgets have an `Identifier` field (under the `Behavior` category.) This can be used to uniquely
@@ -138,3 +150,45 @@ restyle themselves. To do so, use the WidgetStyleManager class, which is a GameI
 In some cases it may be necessary to resolve ambiguities about the order in which styles should be applied
 to a widget. In a selector string, you can prefix a token with `!` to invert it and only match widgets that
 do not have the given tag. You can also use the `+` prefix, which will match that tag at a higher priority.
+
+## Implementation Notes
+
+### Performance
+
+Production-grade performance is a key consideration of this plugin. To that end, it is written entirely in C++,
+and utilizes caching and edit-time processing as much as possible to minimize the runtime workload. Perf costs
+are primarily during widget construction, and there is zero per-frame overhead versus standard UMG widgets.
+
+In some cases you may see performance benefits to using this plugin, because swapping a widget's style by
+changing its tags is faster than changing its appearance using Blueprint functions.
+
+### Replacing UMG Widgets
+
+In the first version of this plugin, the styled widgets inherited from their UMG counterparts. However, this
+created issues because there are significant inconsistencies between widget implementations. To give the
+maximum power and flexibility to the UI designer, it was necessary to achieve a "blank slate", similar to
+reset stylesheets in the web world. This necessitated reimplementing the UMG widgets, but this proved
+to have a number of advantages:
+
+* Simplification and pruning of unnecessary properties. Many UMG widgets, for example, have multiple
+  colors, and it is often unclear which should be used. This is related to...
+* Better encapsulation of Slate. UMG is somewhat inconsistent about where it exposes Slate structures
+  directly (such as `FSlateBrush`) and where it encapsulates them. In rebuilding the widgets I have
+  tended towards a much more thorough encapsulation of the underlying Slate widget, with the goal of
+  presenting the cleanest and simplest interface to UI designers.
+* More consistent interactivity features. UMG widgets are not terribly consistent in terms of supporting
+  states like hovered, focused, etc. Styled widgets all support these natively, and also provide Blueprint
+  events for these interactions. I have also added support for keyboard and controller input as an alternative
+  mechanism for clicking. In order to avoid adding any runtime overhead, these interactions are all opt-in.
+* Removal of hard-coded styling choices. In particular, many UMG widgets are automatically rendered as
+  semi-transparent when disabled. Only a handful override this behavior. My intent has been to expose 100%
+  of all appearance decisions to the UI designer.
+  
+## Known Issues
+
+This is still an early version of this plugin, and so there is quite a bit more work to be done. This
+includes:
+
+* More widget types, with the goal of eventually providing a styled version of every UMG widget type.
+* Integration with UE5's Common UI and View Model plugins.
+* Better documentation and more in-depth tutorials.
