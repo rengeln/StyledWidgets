@@ -47,6 +47,9 @@ your widgets yet. That is because only one style sheet may be active at a time. 
 sheet in Project Settings, under Plugins > Styled Widgets. Once you point this at your new style sheet, it will
 apply globally to all widgets in your project.
 
+![image](https://user-images.githubusercontent.com/1334849/203667405-7f5c9cc0-dc49-4205-9512-9b9cce946f66.png)
+*The style sheet editor.*
+
 The style sheet editor allows you to create new styles. Each style is specific to a certain widget type. When
 you select a style in the list, you can choose which properties it will provide. Like CSS, styles are *cascaded*,
 meaning the final style is built up by applying many individual style definitions, each of which can choose which
@@ -80,6 +83,9 @@ This is handled by automatically adding or removing certain tags based on a widg
 * `disabled` is added when the widget is in the disbled state. Styled widgets override the default Slate behavior
   or rendering disabled widgets semi-transparently, giving you full control over their appearance.
 
+![image](https://user-images.githubusercontent.com/1334849/203667184-7cb148d3-ba6a-4bfe-8016-dd765e493936.png)
+*Example of using the `disabled` tag to change the background color of a button.*
+
 Because these states are implemented as style tags, you have the full power of the styling engine to determine
 how they effect a widget's appearance.
 
@@ -88,6 +94,9 @@ how they effect a widget's appearance.
 Standardizing colors is an important part of any UI design workflow. Style sheets have a built in mechanism to
 support this: the color palette. The palette allows you to designate a set of named colors. Then, in any style
 with a color property, you can click a button to open up a menu allowing you to select one of these named colors.
+
+![image](https://user-images.githubusercontent.com/1334849/203667052-f76380b1-fb66-482a-a14a-255580cc4756.png)
+*Example of using the color palette to set a color property in a style.*
 
 If, at a later time, you want to change the color, you can update it within the color palette. You will then
 be asked if you want to update all instances of that color across all styles.
