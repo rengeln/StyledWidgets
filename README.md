@@ -19,6 +19,11 @@ There are three components to this plugin:
 * The styling engine itself, which generates styles on-demand for widgets, and can refresh them in real-time when the
   style sheet is modified or swapped out.
 
+## Compatibility
+
+The current release is compatible with Unreal Engine 5.1. It can be made compatible with 5.0 through a small
+number of trivial modifications.
+
 ## Getting Started
 
 In the plugin's Content folder is an example widget, as well as a map which allows you to explore how the widget 
