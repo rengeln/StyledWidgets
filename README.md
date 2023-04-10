@@ -1,5 +1,7 @@
 # Styled Widgets Plugin
 
+[![Video Overview](http://img.youtube.com/vi/fVdFTdEALVQ/0.jpg)](http://www.youtube.com/watch?v=fVdFTdEALVQ "Styled Widgets Plugin: Overview")
+
 This plugin for Unreal Engine 5 allows you to create CSS-inspired style sheets to define the appearance of your in-game UI.
 It is designed to improve your iteration speed and allow you to deploy and update UI themes across your entire game in
 very little time.
@@ -16,6 +18,11 @@ There are three components to this plugin:
 
 * The styling engine itself, which generates styles on-demand for widgets, and can refresh them in real-time when the
   style sheet is modified or swapped out.
+
+## Compatibility
+
+The current release is compatible with Unreal Engine 5.1. It can be made compatible with 5.0 through a small
+number of trivial modifications.
 
 ## Getting Started
 
@@ -195,5 +202,6 @@ includes:
 * Mechanism for splitting a style sheet into multiple files to make it easier for designers to collaborate.
 * Tool for diagnosing how a style is applied to a widget so that a designer can easily debug when a
   widget doesn't look like expected.
+* Screen reader/general accessibility support.
   
 
