@@ -23,6 +23,7 @@ class TStyledWidgetBase
 {
 protected:
 	template <typename TBase, typename TOuter> friend class SStyledWidget;
+	template <typename TOuter> friend class SStyledLeafWidget;
 
 	void GatherInheritedStyleTags(TArray<FName>& OutStyleTags);
 	void HandleStyleTagsChanged();

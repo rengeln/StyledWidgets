@@ -43,11 +43,24 @@ public:
 	UFUNCTION(BlueprintImplementableEvent, Category = "Widget")
 	void OnClicked();
 
+	UFUNCTION(BlueprintImplementableEvent, Category = "Widget")
+	void OnStartHover();
+
+	UFUNCTION(BlueprintImplementableEvent, Category = "Widget")
+	void OnEndHover();
+
+	UFUNCTION(BlueprintImplementableEvent, Category = "Widget")
+	void OnStartFocus();
+
+	UFUNCTION(BlueprintImplementableEvent, Category = "Widget")
+	void OnEndFocus();
+
 protected:
 	template <typename TWidget> friend class TStyledWidgetBase;
 
 	virtual void SynchronizeProperties() override;
 	virtual void PostInitProperties() override;
+	virtual void PreSave(FObjectPreSaveContext SaveContext) override;
 	virtual FReply NativeOnFocusReceived(FGeometry const& InGeometry, FFocusEvent const& InFocusEvent);
 	virtual void NativeOnFocusLost(FFocusEvent const& InFocusEvent);
 	virtual void NativeOnMouseEnter(FGeometry const& InGeometry, FPointerEvent const& InMouseEvent);
@@ -85,7 +98,7 @@ protected:
 	FString StyleTagsString;
 #endif // WITH_EDITORONLY_DATA
 
-	UPROPERTY()
+	UPROPERTY(VisibleAnywhere, Category="Style", AdvancedDisplay, meta=(DisplayName="Style Tag Array"))
 	TArray<FName> StyleTags;
 
 	// If true, any tags added to this widget are also added to all child widgets.

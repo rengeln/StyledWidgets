@@ -114,7 +114,7 @@ protected:
 	FString StyleTagsString;
 #endif // WITH_EDITORONLY_DATA
 
-	UPROPERTY()
+	UPROPERTY(VisibleAnywhere, Category="Style", AdvancedDisplay, meta=(DisplayName="Style Tag Array"))
 	TArray<FName> StyleTags;
 
 	// Overrides the style sheet used to style this widget. If left blank, the project default style sheet is used.

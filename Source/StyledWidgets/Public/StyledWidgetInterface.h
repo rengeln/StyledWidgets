@@ -18,7 +18,7 @@ class IStyledWidgetInterface
 	GENERATED_BODY()
 
 public:
-	UFUNCTION(BlueprintPure, Category = "Widget")
+	UFUNCTION(BlueprintCallable, Category = "Widget")
 	virtual FName GetIdentifier() const = 0;
 
 	UFUNCTION(BlueprintCallable, Category = "Widget")

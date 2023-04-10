@@ -23,6 +23,21 @@ void UStyledTextWidget::SetText(FText const& InText)
 	}
 }
 
+void UStyledTextWidget::SetColorOverride(FLinearColor const& InColor, FLinearColor const& InShadowColor, FLinearColor const& InOutlineColor)
+{
+	bUseColorOverride = true;
+	ColorOverride = InColor;
+	ShadowColorOverride = InShadowColor;
+	OutlineColorOverride = InOutlineColor;
+	UpdateColors();
+}
+
+void UStyledTextWidget::ClearColorOverride()
+{
+	bUseColorOverride = false;
+	UpdateColors();
+}
+
 TSharedRef<SWidget> UStyledTextWidget::RebuildWidget()
 {
 	SlateWidget = SNew(SStyledTextBlock, this);
@@ -61,20 +76,32 @@ void UStyledTextWidget::ApplyStyle(UWidgetStyleBase* Style)
 	{
 		if (SlateWidget.IsValid())
 		{
-			FSlateFontInfo SlateFontInfo((UObject const*)TextStyle->Font, TextStyle->Size, TextStyle->Typeface);
-			SlateFontInfo.FontMaterial = TextStyle->Material;
-			SlateFontInfo.LetterSpacing = TextStyle->LetterSpacing;
-			SlateFontInfo.OutlineSettings.OutlineSize = TextStyle->OutlineSize;
-			SlateFontInfo.OutlineSettings.OutlineColor = TextStyle->OutlineColor;
+			SlateFont = FSlateFontInfo((UObject const*)TextStyle->Font, TextStyle->Size, TextStyle->Typeface);
+			SlateFont.FontMaterial = TextStyle->Material;
+			SlateFont.LetterSpacing = TextStyle->LetterSpacing;
+			SlateFont.OutlineSettings.OutlineSize = TextStyle->OutlineSize;
 
-			SlateWidget->SetColorAndOpacity(TextStyle->Color);
-			SlateWidget->SetFont(SlateFontInfo);
-			SlateWidget->SetShadowColorAndOpacity(TextStyle->ShadowColor);
 			SlateWidget->SetShadowOffset(TextStyle->ShadowOffset);
 			SlateWidget->SetLineHeightPercentage(TextStyle->LineHeightPercentage);
 
 			TextStyle->StrikeBrush.MakeSlateBrush(TextStyle->StrikeColor, &StrikeBrush);
 			SlateWidget->SetStrikeBrush(&StrikeBrush);
+
+			StyleColor = TextStyle->Color;
+			StyleShadowColor = TextStyle->ShadowColor;
+			StyleOutlineColor = TextStyle->OutlineColor;
+			UpdateColors();
 		}
+	}
+}
+
+void UStyledTextWidget::UpdateColors()
+{
+	if (SlateWidget.IsValid())
+	{
+		SlateFont.OutlineSettings.OutlineColor = bUseColorOverride ? OutlineColorOverride : StyleOutlineColor;
+		SlateWidget->SetFont(SlateFont);
+		SlateWidget->SetColorAndOpacity(bUseColorOverride ? ColorOverride : StyleColor);
+		SlateWidget->SetShadowColorAndOpacity(bUseColorOverride ? ShadowColorOverride : StyleShadowColor);
 	}
 }

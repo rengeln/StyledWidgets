@@ -112,7 +112,7 @@ protected:
 	FString StyleTagsString;
 #endif // WITH_EDITORONLY_DATA
 
-	UPROPERTY()
+	UPROPERTY(VisibleAnywhere, Category="Style", AdvancedDisplay, meta=(DisplayName="Style Tag Array"))
 	TArray<FName> StyleTags;
 
 	// If true, any tags added to this widget are also added to all child widgets.

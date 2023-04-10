@@ -18,19 +18,34 @@ void UStyledUserWidget::PostInitProperties()
 {
 	Super::PostInitProperties();
 
-	// workaround for an editor bug where the style tags don't get saved after they
-	// are modified in PostEditPropertyChanged
 #if WITH_EDITORONLY_DATA
 	TArray<FString> TagStrings;
 	StyleTagsString.ParseIntoArrayWS(TagStrings, TEXT(","));
-		
+
 	StyleTags.Empty();
 	for (FString const& TagString : TagStrings)
 	{
 		StyleTags.Add(FName(*TagString));
 	}
-#endif // WITH_EDITOR
+#endif // WITH_EDITORONLY_DATA
 }
+
+void UStyledUserWidget::PreSave(FObjectPreSaveContext SaveContext)
+{
+	Super::PreSave(SaveContext);
+
+#if WITH_EDITORONLY_DATA
+	TArray<FString> TagStrings; 
+	StyleTagsString.ParseIntoArrayWS(TagStrings, TEXT(","));
+
+	StyleTags.Empty();
+	for (FString const& TagString : TagStrings)
+	{
+		StyleTags.Add(FName(*TagString));
+	}
+#endif // WITH_EDITORONLY_DATA
+}
+
 
 void UStyledUserWidget::SetIsEnabled(bool bInIsEnabled)
 {
@@ -168,10 +183,26 @@ void UStyledUserWidget::DispatchClickEvent()
 
 void UStyledUserWidget::DispatchHoverEvent(bool bInIsHovered)
 {
+	if (bInIsHovered)
+	{
+		OnStartHover();
+	}
+	else
+	{
+		OnEndHover();
+	}
 }
 
 void UStyledUserWidget::DispatchFocusEvent(bool bInIsFocused)
 {
+	if (bInIsFocused)
+	{
+		OnStartFocus();
+	}
+	else
+	{
+		OnEndFocus();
+	}
 }
 
 #if WITH_EDITOR

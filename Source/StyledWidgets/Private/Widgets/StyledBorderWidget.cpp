@@ -32,6 +32,27 @@ void UStyledBorderWidget::SetVerticalAlignment(EVerticalAlignment InVerticalAlig
 	}
 }
 
+void UStyledBorderWidget::SetColorOverride(FLinearColor const& InColor)
+{
+	bUseColorOverride = true;
+	OverrideColor = InColor;
+	BorderBrush.TintColor = OverrideColor;
+	if (SlateWidget.IsValid())
+	{
+		SlateWidget->SetBorderImage(&BorderBrush);
+	}
+}
+
+void UStyledBorderWidget::ClearColorOverride()
+{
+	bUseColorOverride = false;
+	BorderBrush.TintColor = StyleColor;
+	if (SlateWidget.IsValid())
+	{
+		SlateWidget->SetBorderImage(&BorderBrush);
+	}
+}
+
 UClass* UStyledBorderWidget::GetSlotClass() const
 {
 	return UStyledBorderSlot::StaticClass();
@@ -92,11 +113,13 @@ void UStyledBorderWidget::ApplyStyle(UWidgetStyleBase* Style)
 
 	if (auto* BorderStyle = Cast<UStyledBorderStyle>(Style))
 	{
+		StyleColor = BorderStyle->BorderColor;
+
 		if (SlateWidget.IsValid())
 		{
 			SlateWidget->SetPadding(BorderStyle->Padding);
 
-			BorderStyle->BorderBrush.MakeSlateBrush(BorderStyle->BorderColor, &BorderBrush);
+			BorderStyle->BorderBrush.MakeSlateBrush(bUseColorOverride ? OverrideColor : StyleColor, &BorderBrush);
 			SlateWidget->SetBorderImage(&BorderBrush);
 		}
 	}

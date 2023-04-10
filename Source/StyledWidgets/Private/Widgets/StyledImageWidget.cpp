@@ -16,6 +16,19 @@ UStyledImageWidget::UStyledImageWidget(FObjectInitializer const& Initializer) :
 	SizeOverride = FVector2D(32.0f, 32.0f);
 }
 
+void UStyledImageWidget::SetSizeOverride(FVector2D InSizeOverride)
+{
+	bUseSizeOverride = true;
+	SizeOverride = InSizeOverride;
+	SynchronizeProperties();
+}
+
+void UStyledImageWidget::ClearSizeOverride()
+{
+	bUseSizeOverride = false;
+	SynchronizeProperties();
+}
+
 TSharedRef<SWidget> UStyledImageWidget::RebuildWidget()
 {
 	SlateWidget = SNew(SStyledImage, this);

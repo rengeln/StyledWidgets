@@ -16,6 +16,12 @@ class STYLEDWIDGETS_API UStyledImageWidget : public UStyledWidget
 public:
 	UStyledImageWidget(FObjectInitializer const& Initializer);
 
+	UFUNCTION(BlueprintCallable, Category="Widgets|Image")
+	void SetSizeOverride(FVector2D InSizeOverride);
+
+	UFUNCTION(BlueprintCallable, Category="Widgets|Image")
+	void ClearSizeOverride();
+
 protected:
 	friend class SStyledImage;
 

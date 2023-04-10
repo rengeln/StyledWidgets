@@ -4,7 +4,7 @@
 #include <AssetRegistry/IAssetRegistry.h>
 #include <Components/Widget.h>
 #include <Misc/ITransaction.h>
-#include <Misc/TransactionObjectEvent.h>
+//#include <Misc/TransactionObjectEvent.h>
 #include <Widgets/Colors/SColorPicker.h>
 #include <Widgets/Input/SSearchBox.h>
 #include <Widgets/Layout/SScrollBox.h>
@@ -187,8 +187,8 @@ TSharedRef<SWidget> FWidgetStyleSheetEditor::SpawnAddStyleSetMenu()
 
 	TArray<FAssetData> AssetList;
 	FARFilter Filter;
-	Filter.ClassPaths.Add(UBlueprint::StaticClass()->GetClassPathName());
-	Filter.ClassPaths.Add(UBlueprintGeneratedClass::StaticClass()->GetClassPathName());
+	Filter.ClassNames.Add(UBlueprint::StaticClass()->GetFName());
+	Filter.ClassNames.Add(UBlueprintGeneratedClass::StaticClass()->GetFName());
 	AssetRegistry.GetAssets(Filter, AssetList);
 
 	for (auto& Asset : AssetList)

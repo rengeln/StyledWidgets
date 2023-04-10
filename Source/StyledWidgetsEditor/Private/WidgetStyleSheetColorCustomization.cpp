@@ -41,7 +41,7 @@ void FWidgetStyleSheetColorCustomization::CustomizeHeader(TSharedRef<IPropertyHa
 				.ButtonContent()
 				[
 					SNew(SImage)
-					.Image(FAppStyle::GetBrush("ColorPicker.ColorThemes"))
+					.Image(FEditorStyle::GetBrush("ColorPicker.ColorThemes"))
 				]
 			]
 		];

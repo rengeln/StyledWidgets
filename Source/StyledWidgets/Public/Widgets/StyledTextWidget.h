@@ -22,6 +22,12 @@ public:
 	UFUNCTION(BlueprintPure, Category="Widgets|Text")
 	inline FText GetText() const { return Text; }
 	
+	UFUNCTION(BlueprintCallable, Category = "Widgets|Text")
+	void SetColorOverride(FLinearColor const& InColor, FLinearColor const& InShadowColor = FLinearColor::Transparent, FLinearColor const& InOutlineColor = FLinearColor::Transparent);
+
+	UFUNCTION(BlueprintCallable, Category = "Widgets|Text")
+	void ClearColorOverride();
+
 protected:
 	friend class SStyledTextBlock;
 
@@ -55,11 +61,28 @@ protected:
 	UPROPERTY(EditAnywhere, Category="Arrangement")
 	float MinDesiredWidth;
 
+	UPROPERTY(EditAnywhere, Category="Appearance")
+	bool bUseColorOverride;
+
+	UPROPERTY(EditAnywhere, Category="Appearance", meta=(EditCondition="bUseColorOverride"))
+	FLinearColor ColorOverride;
+
+	UPROPERTY(EditAnywhere, Category="Appearance", meta=(EditCondition="bUseColorOverride"))
+	FLinearColor ShadowColorOverride;
+
+	UPROPERTY(EditAnywhere, Category = "Appearance", meta = (EditCondition = "bUseColorOverride"))
+	FLinearColor OutlineColorOverride;
+
 	virtual TSharedRef<SWidget> RebuildWidget() override;
 	virtual void ReleaseSlateResources(bool bReleaseChildren) override;
 	virtual void SynchronizeProperties() override;
 	virtual void ApplyStyle(UWidgetStyleBase* Style) override;
+	void UpdateColors();
 
+	FLinearColor StyleColor;
+	FLinearColor StyleShadowColor;
+	FLinearColor StyleOutlineColor;
 	TSharedPtr<SStyledTextBlock> SlateWidget;
 	FSlateBrush StrikeBrush;
+	FSlateFontInfo SlateFont;
 };

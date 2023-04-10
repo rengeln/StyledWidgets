@@ -108,7 +108,7 @@ bool FWidgetStyleSelector::Parse(FString const& InString)
 			bIsValidToken = TChar<TCHAR>::IsAlpha(Token[0]);
 			for (int CharIndex = 0; bIsValidToken && CharIndex < Token.Len(); CharIndex++)
 			{
-				if (!TChar<TCHAR>::IsAlnum(Token[CharIndex]))
+				if (!TChar<TCHAR>::IsAlnum(Token[CharIndex]) && Token[CharIndex] != '_')
 				{
 					bIsValidToken = false;
 				}

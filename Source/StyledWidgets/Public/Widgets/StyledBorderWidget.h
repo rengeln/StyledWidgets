@@ -22,6 +22,12 @@ public:
 	UFUNCTION(BlueprintCallable, Category="Widget|Layout")
 	void SetVerticalAlignment(EVerticalAlignment InVerticalAlignment);
 
+	UFUNCTION(BlueprintCallable, Category="Widget|Border")
+	void SetColorOverride(FLinearColor const& InColor);
+
+	UFUNCTION(BlueprintCallable, Category="Widget|Border")
+	void ClearColorOverride();
+
 protected:
 	friend class SStyledBorder;
 
@@ -46,5 +52,9 @@ protected:
 	UPROPERTY(Transient)
 	FSlateBrush BorderBrush;
 	
+	bool bUseColorOverride;
+	FLinearColor OverrideColor;
+	FLinearColor StyleColor;
+
 	TSharedPtr<SStyledBorder> SlateWidget;
 };
