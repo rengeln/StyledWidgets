@@ -5,6 +5,7 @@
 #include <Components/Widget.h>
 #include <Engine/GameInstance.h>
 #include "StyledWidget.h"
+#include "StyledActivatableWidget.h"
 #include "StyledContentWidget.h"
 #include "StyledUserWidget.h"
 #include "WidgetStyleSettings.h"
@@ -327,5 +328,6 @@ FReply TStyledWidgetBase<TWidget>::HandleKeyUp(FKeyEvent const& InKeyEvent)
 }
 
 template class TStyledWidgetBase<UStyledWidget>;
+template class TStyledWidgetBase<UStyledActivatableWidget>;
 template class TStyledWidgetBase<UStyledContentWidget>;
 template class TStyledWidgetBase<UStyledUserWidget>;
