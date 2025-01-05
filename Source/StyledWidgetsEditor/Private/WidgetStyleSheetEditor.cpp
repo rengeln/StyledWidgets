@@ -2,6 +2,8 @@
 
 #include <AssetRegistry/AssetRegistryModule.h>
 #include <AssetRegistry/IAssetRegistry.h>
+#include <ClassViewerFilter.h>
+#include <ClassViewerModule.h>
 #include <Components/Widget.h>
 #include <Misc/ITransaction.h>
 #include <Misc/TransactionObjectEvent.h>
@@ -162,59 +164,40 @@ void FWidgetStyleSheetEditor::ExtendToolbar(FToolBarBuilder& ToolbarBuilder)
 		FSlateIcon(FAppStyle::GetAppStyleSetName(), "DataTableEditor.Add"));
 }
 
+class FWidgetStyleSheetClassFilter : public IClassViewerFilter
+{
+public:
+	TSet<const UClass*> BaseClasses;
+
+	FWidgetStyleSheetClassFilter()
+	{
+		BaseClasses.Add(UWidgetStyleBase::StaticClass());
+	}
+
+	virtual bool IsClassAllowed(const FClassViewerInitializationOptions& InInitOptions, const UClass* InClass, TSharedRef<FClassViewerFilterFuncs> InFilterFuncs) override
+	{
+		return InClass->IsChildOf<UWidgetStyleBase>() && !InClass->HasAnyClassFlags(CLASS_Abstract | CLASS_Deprecated);
+	}
+
+	virtual bool IsUnloadedClassAllowed(const FClassViewerInitializationOptions& InInitOptions, const TSharedRef<const IUnloadedBlueprintData> InUnloadedClassData, TSharedRef<FClassViewerFilterFuncs> InFilterFuncs) override
+	{
+		return InFilterFuncs->IfInChildOfClassesSet(BaseClasses, InUnloadedClassData) == EFilterReturn::Passed;
+	}
+};
+
+
 TSharedRef<SWidget> FWidgetStyleSheetEditor::SpawnAddStyleSetMenu()
 {
-	FMenuBuilder AddMenu(true, ToolkitCommands);
+	FClassViewerModule& ClassViewerModule = FModuleManager::LoadModuleChecked<FClassViewerModule>("ClassViewer");
 
-	// first add native classes
-	for (TObjectIterator<UClass> ClassIterator; ClassIterator; ++ClassIterator)
-	{
-		if (ClassIterator->IsChildOf<UWidgetStyleBase>() &&
-			!ClassIterator->HasAnyClassFlags(CLASS_Abstract | CLASS_CompiledFromBlueprint))
-		{
-			UClass* Class = *ClassIterator;
+	FClassViewerInitializationOptions Options;
+	Options.Mode = EClassViewerMode::ClassPicker;
+	Options.bShowUnloadedBlueprints = true;
+	Options.NameTypeToDisplay = EClassViewerNameTypeToDisplay::DisplayName;
+	Options.ClassFilters.Add(MakeShared<FWidgetStyleSheetClassFilter>());
+	ClassPickerWidget = ClassViewerModule.CreateClassViewer(Options, FOnClassPicked::CreateSP(this, &FWidgetStyleSheetEditor::AddStyleSet));
 
-			AddMenu.AddMenuEntry(ClassIterator->GetDisplayNameText(), 
-				Class->GetToolTipText(),
-				FSlateIcon(),
-				FExecuteAction::CreateSP(this, &FWidgetStyleSheetEditor::AddStyle, TSubclassOf<UWidgetStyleBase>(Class)));
-		}
-	}
-
-	// next add blueprint classes
-	FAssetRegistryModule& AssetRegistryModule = FModuleManager::LoadModuleChecked< FAssetRegistryModule >(FName("AssetRegistry"));
-	IAssetRegistry& AssetRegistry = AssetRegistryModule.Get();
-
-	TArray<FAssetData> AssetList;
-	FARFilter Filter;
-	Filter.ClassPaths.Add(UBlueprint::StaticClass()->GetClassPathName());
-	Filter.ClassPaths.Add(UBlueprintGeneratedClass::StaticClass()->GetClassPathName());
-	AssetRegistry.GetAssets(Filter, AssetList);
-
-	for (auto& Asset : AssetList)
-	{
-		if (UObject* AssetObj = Asset.GetAsset())
-		{
-			UBlueprint* Blueprint = Cast<UBlueprint>(StaticLoadObject(UBlueprint::StaticClass(), NULL, *AssetObj->GetPathName()));
-
-			if (Blueprint != NULL && Blueprint->GeneratedClass != NULL && Blueprint->GeneratedClass->GetDefaultObject() != NULL)
-			{
-				UClass* Class = Blueprint->GeneratedClass;
-
-				if (Class->IsChildOf(UWidgetStyleBase::StaticClass()))
-				{
-					AddMenu.AddMenuEntry(Class->GetDisplayNameText(), 
-						Class->GetToolTipText(),
-						FSlateIcon(),
-						FExecuteAction::CreateSP(this, &FWidgetStyleSheetEditor::AddStyle, TSubclassOf<UWidgetStyleBase>(Class)));
-				}
-			}
-		}
-	}
-
-	AddMenu.EndSection();
-
-	return AddMenu.MakeWidget();
+	return ClassPickerWidget.ToSharedRef();
 }
 
 void FWidgetStyleSheetEditor::RegisterTabSpawners(const TSharedRef<class FTabManager>& InTabManager)
@@ -491,18 +474,30 @@ FWidgetStyleSheetModelPtr FWidgetStyleSheetEditor::GetStyleSheetModel() const
 	return StyleSheetModel;
 }
 
-void FWidgetStyleSheetEditor::AddStyle(TSubclassOf<UWidgetStyleBase> StyleClass)
+void FWidgetStyleSheetEditor::AddStyleSet(UClass* StyleSetClass)
 {
-	const FScopedTransaction Transaction(NSLOCTEXT("StyledWidgets", "AddStyle", "Add Style"));
+	if (ensure(StyleSetClass->IsChildOf<UWidgetStyleBase>()))
+	{
+		const FScopedTransaction Transaction(NSLOCTEXT("StyledWidgets", "AddStyle", "Add Style"));
 
-	FWidgetStyleSheetStyleModelPtr NewStyle = StyleSheetModel->AddStyle(StyleClass);
-	NewStyle->GetStyleInstance()->SelectorString = StyleSearchString;
-	SaveToAsset();
-	StyleList->SetSelection(NewStyle, ESelectInfo::Direct);
-	SortAndRefreshStyleList();
+		FWidgetStyleSheetStyleModelPtr NewStyle = StyleSheetModel->AddStyle(StyleSetClass);
+		NewStyle->GetStyleInstance()->SelectorString = StyleSearchString;
+		SaveToAsset();
+		StyleList->SetSelection(NewStyle, ESelectInfo::Direct);
+		SortAndRefreshStyleList();
 
-	FSlateApplication::Get().SetKeyboardFocus(
-		StyleView->GetDetailsView(), EFocusCause::SetDirectly);
+		FSlateApplication::Get().SetKeyboardFocus(
+			StyleView->GetDetailsView(), EFocusCause::SetDirectly);
+	}
+
+	if (ClassPickerWidget.IsValid())
+	{
+		TSharedPtr<SWindow> ParentWindow = FSlateApplication::Get().FindWidgetWindow(ClassPickerWidget.ToSharedRef());
+		if (ParentWindow.IsValid())
+		{
+			FSlateApplication::Get().RequestDestroyWindow(ParentWindow.ToSharedRef());
+		}
+	}
 }
 
 void FWidgetStyleSheetEditor::DeleteStyle(FWidgetStyleSheetStyleModelPtr Style)

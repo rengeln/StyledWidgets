@@ -166,7 +166,7 @@ FReply SWidgetStyleSheetColorListItem::OnClickedColorBlock(FGeometry const& InGe
 	Args.bIsModal = true;
 	Args.bUseAlpha = true;
 	Args.sRGBOverride = true;
-	Args.InitialColorOverride = ColorModel->GetColor();
+	Args.InitialColor = ColorModel->GetColor();
 	Args.OnColorCommitted = FOnLinearColorValueChanged::CreateSP(this, &SWidgetStyleSheetColorListItem::OnColorCommitted);
 
 	OpenColorPicker(Args);

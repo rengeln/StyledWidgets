@@ -49,7 +49,7 @@ private:
 	TSharedRef<SDockTab> SpawnColorsTab(const FSpawnTabArgs& Args);
 	TSharedRef<SWidget> SpawnAddStyleSetMenu();
 	
-	void AddStyle(TSubclassOf<class UWidgetStyleBase> StyleClass);
+	void AddStyleSet(UClass* StyleSetClass);
 
 	TSharedRef<ITableRow> StyleList_SpawnItemWidget(FWidgetStyleSheetStyleModelPtr ItemModel, const TSharedRef<STableViewBase>& OwnerTable);
 	TArray<FWidgetStyleSheetStyleModelPtr> StyleList_GetListItems() const;
@@ -85,7 +85,7 @@ private:
 	bool bIsLoadingOrSaving = false;
 	FWidgetStyleSheetModelPtr StyleSheetModel;
 	TSharedPtr<SWidgetStyleSheetStyleView> StyleView;
-
+	TSharedPtr<SWidget> ClassPickerWidget;
 	TSharedPtr<SWidgetStyleSheetStyleList> StyleList;
 	TSharedPtr<SHeaderRow> StyleListHeader;
 	TArray<FWidgetStyleSheetStyleModelPtr> FilteredStyleList;
